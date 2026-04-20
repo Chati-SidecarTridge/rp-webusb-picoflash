@@ -418,6 +418,12 @@ const ADVANCED_UF2_VALIDATION = true;
 
 const PICOBOOT_MAGIC = 0x431fd10b;
 
+function buildNoCacheUrl(rawUrl) {
+  const url = new URL(rawUrl, window.location.href);
+  url.searchParams.set("_ts", Date.now().toString());
+  return url.toString();
+}
+
 const CMD_EXCLUSIVE = 0x01;
 const CMD_REBOOT = 0x02;
 const CMD_ERASE = 0x03;
@@ -792,7 +798,13 @@ async function loadFirmwareCatalog() {
   }
   deviceCatalogPromise = (async () => {
   try {
-    const response = await fetch(DEVICES_JSON_URL);
+    const response = await fetch(buildNoCacheUrl(DEVICES_JSON_URL), {
+      cache: "no-store",
+      headers: {
+        "Cache-Control": "no-cache",
+        "Pragma": "no-cache"
+      }
+    });
     if (!response.ok) throw new Error("Unable to load devices.json");
     deviceCatalog = await response.json();
     renderFamilies();
