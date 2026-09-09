@@ -556,7 +556,7 @@ function updateFlashEnabled() {
     flashControlsEl.style.display = bootselPermitted && webUsbSupported ? "block" : "none";
   }
   if (driveFlashEl) {
-    const showDrive = uf2Bytes && detectedMcu === "RP2040" && isWindows() && typeof window.showDirectoryPicker === "function";
+    const showDrive = uf2Bytes && detectedMcu && isWindows() && typeof window.showDirectoryPicker === "function";
     driveFlashEl.style.display = showDrive ? "block" : "none";
   }
   if (driveFlashBtn) driveFlashBtn.disabled = flashingActive;
