@@ -17,9 +17,11 @@ This project runs fully in the browser (Chromium-based only) and uses the ROM ve
 - A RP2040 or RP2350 device in BOOTSEL mode.
 - WebUSB enabled (default on desktop Chromium).
 
+The installer is hosted at https://webflash.sidecartridge.com (GitHub Pages behind Cloudflare).
+
 ## Usage
 
-1. Open `sidecartridge-firmware-installer.html` in a Chromium-based browser.
+1. Open https://webflash.sidecartridge.com (or `index.html` locally) in a Chromium-based browser.
 2. Click **Select UF2** and choose your file.
 3. Put the device into BOOTSEL mode and plug it in.
 4. Click **Flash** and select the device in the WebUSB dialog.
@@ -35,7 +37,7 @@ This project runs fully in the browser (Chromium-based only) and uses the ROM ve
 
 Everything is in a single file:
 
-- `sidecartridge-firmware-installer.html`
+- `index.html`
 
 No build or dependencies required.
 
