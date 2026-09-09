@@ -556,7 +556,8 @@ function updateFlashEnabled() {
     flashControlsEl.style.display = bootselPermitted && webUsbSupported ? "block" : "none";
   }
   if (driveFlashEl) {
-    driveFlashEl.style.display = uf2Bytes && typeof window.showDirectoryPicker === "function" ? "block" : "none";
+    const showDrive = uf2Bytes && detectedMcu === "RP2040" && isWindows() && typeof window.showDirectoryPicker === "function";
+    driveFlashEl.style.display = showDrive ? "block" : "none";
   }
   if (driveFlashBtn) driveFlashBtn.disabled = flashingActive;
   updateFlashLabel();
@@ -773,6 +774,10 @@ function renderManualNotice(manualOnly) {
   link.textContent = "sidecartridge.com/quickstart";
   manualNoticeEl.appendChild(link);
   manualNoticeEl.style.display = "block";
+}
+
+function isWindows() {
+  return /Windows/.test(navigator.userAgent);
 }
 
 function isChromiumBrowser() {
@@ -1108,14 +1113,24 @@ async function flashViaDrive() {
   log(`Copying UF2 to drive "${dir.name}"...`);
   try {
     const fileName = firmwareMeta.uf2_url.split("/").pop();
+    log(`Creating ${fileName}...`);
     const handle = await dir.getFileHandle(fileName, { create: true });
+    log("Opening write stream...");
     const writable = await handle.createWritable({ keepExistingData: false });
+    log(`Writing ${total} bytes...`);
+    let lastLogged = 0;
     while (written < total) {
       const end = Math.min(written + CHUNK, total);
       await writable.write(uf2Bytes.subarray(written, end));
       written = end;
-      setProgressValue(Math.round(written * 100 / total));
+      const pct = Math.round(written * 100 / total);
+      setProgressValue(pct);
+      if (pct >= lastLogged + 10 || written === total) {
+        lastLogged = pct;
+        log(`Writing... ${pct}%`);
+      }
     }
+    log("Closing file...");
     try {
       await writable.close();
     } catch (err) {
