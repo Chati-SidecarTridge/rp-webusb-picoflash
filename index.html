@@ -374,6 +374,10 @@ progress.progress-verify::-moz-progress-bar {
         <div id="deviceWarning" style="margin-top:8px; color:#93c5fd; display:none;">
           RP2040 detected. Web flashing is enabled.
         </div>
+        <div id="driveFlash" style="display:none; margin-top:12px; padding-top:10px; border-top:1px solid #1f2937;">
+          <div style="margin-bottom:8px;">Alternative without USB drivers: copy the firmware straight to the BOOTSEL drive (RPI-RP2 or RP2350) that appears on your computer. Pick that drive in the dialog.</div>
+          <button id="flashViaDrive" class="secondary" type="button">Copy to BOOTSEL drive</button>
+        </div>
       </div>
     </li>
     <li id="step4" class="step">
@@ -436,6 +440,7 @@ const FLASH_BASE = 0x10000000;
 const SECTOR = 4096;
 
 let uf2 = null;
+let uf2Bytes = null;
 let firmwareMeta = null;
 let bootselDetected = false;
 let bootselPermitted = false;
@@ -476,6 +481,8 @@ const familySelect = document.getElementById("familySelect");
 const firmwareSelect = document.getElementById("firmwareSelect");
 const loadFirmwareBtn = document.getElementById("loadFirmware");
 const deviceWarningEl = document.getElementById("deviceWarning");
+const driveFlashEl = document.getElementById("driveFlash");
+const driveFlashBtn = document.getElementById("flashViaDrive");
 const firmwareDetailsEl = document.getElementById("firmwareDetails");
 const manualNoticeEl = document.getElementById("manualNotice");
 const downloadFirmwareButtonEl = document.getElementById("downloadFirmwareButton");
@@ -548,6 +555,10 @@ function updateFlashEnabled() {
   if (flashControlsEl) {
     flashControlsEl.style.display = bootselPermitted && webUsbSupported ? "block" : "none";
   }
+  if (driveFlashEl) {
+    driveFlashEl.style.display = uf2Bytes && typeof window.showDirectoryPicker === "function" ? "block" : "none";
+  }
+  if (driveFlashBtn) driveFlashBtn.disabled = flashingActive;
   updateFlashLabel();
 }
 
@@ -647,6 +658,7 @@ function getMcuForDevice(dev) {
 function resetFirmwareSelectionState() {
   firmwareMeta = null;
   uf2 = null;
+  uf2Bytes = null;
   visibleFirmwares = [];
   if (familySelect) familySelect.value = "";
   if (firmwareSelect) {
@@ -867,6 +879,7 @@ function renderFirmwares(familyIndex) {
   }
   firmwareMeta = null;
   uf2 = null;
+  uf2Bytes = null;
   if (fileNameEl) fileNameEl.textContent = "File name: (none)";
   setProgressValue(0);
   updateFlashEnabled();
@@ -926,6 +939,7 @@ async function loadFirmwareSelection() {
     const buf = await response.arrayBuffer();
     setProgressMode("progress-load");
     setProgressValue(0);
+    uf2Bytes = new Uint8Array(buf);
     uf2 = await parseUF2(buf, progress => {
       setProgressValue(progress);
       if (progress % 10 === 0) {
@@ -941,6 +955,7 @@ async function loadFirmwareSelection() {
     updateFlashEnabled();
   } catch (err) {
     uf2 = null;
+    uf2Bytes = null;
     updateFlashEnabled();
     log("ERROR: " + err.message);
   }
@@ -1051,6 +1066,84 @@ if (grantUsbBtn) {
       log(`USB access request canceled (${err.message}).`);
     }
   });
+}
+
+function showFlashSuccess() {
+  setStepState(step4El, [step1El, step2El, step3El]);
+  setStepHeader(step3El, "Complete");
+  setStepHeader(step4El, "Success");
+  if (postInstallEl && firmwareMeta) {
+    postInstallEl.innerHTML = sanitizeAllowedHtml(firmwareMeta.post_install_html);
+  }
+  if (flashAgainBtn) {
+    flashAgainBtn.style.display = "inline-block";
+  }
+  awaitingPostFlashConfirm = true;
+}
+
+// Driver-free path: write the UF2 into the bootrom's mass-storage drive.
+// The bootrom flashes any sector carrying the UF2 magic regardless of file
+// name, then reboots after the last block, so the drive vanishes before the
+// write stream can be closed. Treat that as success once every byte is out.
+async function flashViaDrive() {
+  if (!uf2Bytes || flashingActive) return;
+  let dir;
+  try {
+    dir = await window.showDirectoryPicker({ mode: "readwrite", id: "bootsel-drive" });
+  } catch (err) {
+    if (err.name !== "AbortError") log(`ERROR: ${err.message}`);
+    return;
+  }
+
+  const total = uf2Bytes.length;
+  const CHUNK = 64 * 1024;
+  let written = 0;
+  flashingActive = true;
+  awaitingPostFlashConfirm = true;
+  updateFlashEnabled();
+  setStepState(step3El, [step1El, step2El]);
+  setStepHeader(step3El, "Working");
+  setProgressMode("progress-write");
+  setProgressValue(0);
+  log(`Copying UF2 to drive "${dir.name}"...`);
+  try {
+    const fileName = firmwareMeta.uf2_url.split("/").pop();
+    const handle = await dir.getFileHandle(fileName, { create: true });
+    const writable = await handle.createWritable({ keepExistingData: false });
+    while (written < total) {
+      const end = Math.min(written + CHUNK, total);
+      await writable.write(uf2Bytes.subarray(written, end));
+      written = end;
+      setProgressValue(Math.round(written * 100 / total));
+    }
+    try {
+      await writable.close();
+    } catch (err) {
+      log(`Drive disappeared while closing the file (${err.message}). The device rebooted, so the copy completed.`);
+    }
+    setProgressValue(100);
+    log("Copy complete.");
+    showFlashSuccess();
+  } catch (err) {
+    if (written + CHUNK >= total) {
+      // The bootrom reboots as soon as the final block lands, which can
+      // fail the last write from the browser's point of view.
+      setProgressValue(100);
+      log(`Drive disappeared during the final write (${err.message}). The device rebooted, so the copy completed.`);
+      showFlashSuccess();
+    } else {
+      awaitingPostFlashConfirm = false;
+      setStepHeader(step3El, "Ready");
+      log(`ERROR: ${err.message}`);
+    }
+  } finally {
+    flashingActive = false;
+    updateFlashEnabled();
+  }
+}
+
+if (driveFlashBtn) {
+  driveFlashBtn.addEventListener("click", flashViaDrive);
 }
 
 document.getElementById("flash").onclick = async () => {
@@ -1201,16 +1294,7 @@ document.getElementById("flash").onclick = async () => {
       log("Verification successful.");
     }
 
-    setStepState(step4El, [step1El, step2El, step3El]);
-    setStepHeader(step3El, "Complete");
-    setStepHeader(step4El, "Success");
-    if (postInstallEl && firmwareMeta) {
-      postInstallEl.innerHTML = sanitizeAllowedHtml(firmwareMeta.post_install_html);
-    }
-    if (flashAgainBtn) {
-      flashAgainBtn.style.display = "inline-block";
-    }
-    awaitingPostFlashConfirm = true;
+    showFlashSuccess();
 
     log("Reboot");
     try {
