@@ -1106,9 +1106,15 @@ document.getElementById("flash").onclick = async () => {
 
     pico = new PicoTool(dev, iface.iface, iface.out, iface.in);
 
-    log("Open + reset");
+    log(`Claim interface ${iface.iface}`);
     await pico.open();
-    await pico.reset();
+
+    log("Reset");
+    try {
+      await pico.reset();
+    } catch (err) {
+      log(`Reset failed (${err.message}); continuing...`);
+    }
 
     log("Exclusive access");
     try {
@@ -1497,7 +1503,7 @@ class PicoTool {
   }
 
   async open() {
-    await this.device.claimInterface(this.iface);
+    await withTimeout(this.device.claimInterface(this.iface), 3000, "claimInterface");
   }
 
   async close() {
