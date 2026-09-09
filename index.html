@@ -394,6 +394,7 @@ progress.progress-verify::-moz-progress-bar {
 
   <br>
 
+  <div id="helper" style="margin:12px 0 4px; padding:10px 12px; border-left:3px solid #fde047; border-radius:4px; background:#111827; color:#e5e7eb;"></div>
   <div id="fileName" style="margin:8px 0 6px; color:#cbd5f5;">File name: (none)</div>
   <div class="progress-wrap">
     <progress id="prog" value="0" max="100"></progress>
@@ -445,6 +446,8 @@ let firmwareMeta = null;
 let bootselDetected = false;
 let bootselPermitted = false;
 let flashingActive = false;
+let loadingFirmware = false;
+let detectingMcu = false;
 let bootselIsRp2040 = false;
 let detectedMcu = null;
 let deviceCatalog = null;
@@ -476,6 +479,7 @@ const step2El = document.getElementById("step2");
 const step3El = document.getElementById("step3");
 const step4El = document.getElementById("step4");
 const detectMcuBtn = document.getElementById("detectMcu");
+const helperEl = document.getElementById("helper");
 const mcuDetectedEl = document.getElementById("mcuDetected");
 const familySelect = document.getElementById("familySelect");
 const firmwareSelect = document.getElementById("firmwareSelect");
@@ -511,6 +515,41 @@ const log = m => {
   logEl.textContent += `[${ts}] ${m}\n`;
   logEl.scrollTop = logEl.scrollHeight;
 };
+
+const HELP = {
+  noWebUsb: "This browser cannot flash over USB. Pick your firmware in step 2, download it, and copy the file to the RPI-RP2 or RP2350 drive that appears when the board is in BOOTSEL.",
+  step1: "Put the board in BOOTSEL mode following the steps above, then click Detect MCU.",
+  detecting: "Choose the board in the browser dialog. If the list is empty, the board is not in BOOTSEL: unplug it, hold BOOTSEL while plugging it back in, and click Detect MCU again.",
+  detectFailed: "No board in BOOTSEL was found. Unplug it, hold the BOOTSEL or BOOT button while plugging it back in, then click Detect MCU again. Check that the USB cable carries data, not only power. In BOOTSEL a drive named RPI-RP2 or RP2350 appears on your computer.",
+  detected: mcu => `${mcu} detected. In step 2, pick the device family and the firmware, then click Load firmware.`,
+  catalogFailed: "The firmware list could not be downloaded. Reload the page and try again.",
+  downloading: "Downloading the firmware. Keep the board plugged in.",
+  downloadFailed: "The firmware could not be downloaded. Check your internet connection and click Load firmware again.",
+  manual: "Download the firmware with the button above and copy the file to the RPI-RP2 or RP2350 drive. The board restarts by itself when the copy finishes.",
+  step3: "Click Grant USB access, choose the board in the browser dialog, then click Flash. Keep the board plugged in until step 4.",
+  step3Windows: " On Windows, if flashing stops at \"Claim interface\", use Copy to BOOTSEL drive below instead. It needs no USB driver.",
+  granted: "USB access granted. Click Flash and keep the board plugged in until step 4.",
+  grantCanceled: "No board was selected. Click Grant USB access and pick the board in the dialog.",
+  flashing: "Flashing. Do not unplug the board.",
+  claimFailed: "The browser could not open the board's USB interface. This is a Windows driver problem, not a board problem. Use Copy to BOOTSEL drive below. It needs no driver.",
+  flashFailed: "Flashing failed. Unplug the board, put it back in BOOTSEL mode, and try again.",
+  copying: "Copying the firmware to the drive. Do not unplug the board. The drive disappears by itself when the copy finishes.",
+  copyFailed: "The copy did not complete. Unplug the board, put it back in BOOTSEL mode, and click Copy to BOOTSEL drive again.",
+  unplugged: "The board was unplugged. Put it back in BOOTSEL mode and click Detect MCU.",
+  done: "Done. The board has restarted with the new firmware. Follow the instructions in step 4."
+};
+
+function setHelp(text) {
+  if (helperEl) helperEl.textContent = text;
+}
+
+function helpStep3() {
+  return HELP.step3 + (isWindows() ? HELP.step3Windows : "");
+}
+
+function helpForFlashError(message) {
+  return /claimInterface/.test(message) && isWindows() ? HELP.claimFailed : HELP.flashFailed;
+}
 
 function usbFilters() {
   return [
@@ -550,8 +589,11 @@ if (logToggleBtn) {
 
 function updateFlashEnabled() {
   const mcuReady = !!detectedMcu;
-  flashBtn.disabled = !(uf2 && bootselDetected && mcuReady) || !webUsbSupported;
-  if (grantUsbBtn) grantUsbBtn.disabled = !webUsbSupported;
+  flashBtn.disabled = !(uf2 && bootselDetected && mcuReady) || !webUsbSupported || flashingActive;
+  if (grantUsbBtn) grantUsbBtn.disabled = !webUsbSupported || flashingActive;
+  if (detectMcuBtn) detectMcuBtn.disabled = !webUsbSupported || detectingMcu || loadingFirmware || flashingActive;
+  if (eraseToggle) eraseToggle.disabled = flashingActive;
+  if (verifyToggle) verifyToggle.disabled = flashingActive;
   if (flashControlsEl) {
     flashControlsEl.style.display = bootselPermitted && webUsbSupported ? "block" : "none";
   }
@@ -808,6 +850,7 @@ function enforceBrowserSupport() {
 }
 
 enforceBrowserSupport();
+setHelp(webUsbSupported ? HELP.step1 : HELP.noWebUsb);
 
 async function loadFirmwareCatalog() {
   if (deviceCatalogPromise) {
@@ -830,6 +873,7 @@ async function loadFirmwareCatalog() {
     if (familySelect) {
       familySelect.innerHTML = "<option value=\"\">Failed to load devices.json</option>";
     }
+    setHelp(HELP.catalogFailed);
     throw err;
   }
   return deviceCatalog;
@@ -924,24 +968,33 @@ function renderFirmwares(familyIndex) {
 }
 
 async function loadFirmwareSelection() {
-  if (!firmwareMeta) return;
+  if (!firmwareMeta || loadingFirmware) return;
   if (!webUsbSupported) {
     setStepState(step3El, [step1El, step2El]);
     setStep1Header();
     setStepHeader(step2El, "Complete");
     setStepHeader(step3El, "Manual");
     log("Web flashing is not available. Use manual BOOTSEL or BOOT button instructions.");
+    setHelp(HELP.manual);
     updateFlashEnabled();
     return;
   }
+  const meta = firmwareMeta;
+  loadingFirmware = true;
+  if (familySelect) familySelect.disabled = true;
+  if (firmwareSelect) firmwareSelect.disabled = true;
+  if (loadFirmwareBtn) loadFirmwareBtn.disabled = true;
+  updateFlashEnabled();
   try {
     log("Downloading UF2...");
+    setHelp(HELP.downloading);
     setStepState(step2El, [step1El]);
     setStepHeader(step2El, "Working");
-    if (fileNameEl) fileNameEl.textContent = `File name: ${firmwareMeta.uf2_url.split("/").pop()}`;
-    const response = await fetch(firmwareMeta.uf2_url);
+    if (fileNameEl) fileNameEl.textContent = `File name: ${meta.uf2_url.split("/").pop()}`;
+    const response = await fetch(meta.uf2_url);
     if (!response.ok) throw new Error("Unable to download UF2 file");
     const buf = await response.arrayBuffer();
+    if (firmwareMeta !== meta) throw new Error("Firmware selection changed during download");
     setProgressMode("progress-load");
     setProgressValue(0);
     uf2Bytes = new Uint8Array(buf);
@@ -957,12 +1010,19 @@ async function loadFirmwareSelection() {
     setStep1Header();
     setStepHeader(step2El, "Complete");
     setStepHeader(step3El, "Ready");
-    updateFlashEnabled();
+    setHelp(helpStep3());
   } catch (err) {
     uf2 = null;
     uf2Bytes = null;
-    updateFlashEnabled();
+    setStepHeader(step2El, "Ready");
+    setHelp(HELP.downloadFailed);
     log("ERROR: " + err.message);
+  } finally {
+    loadingFirmware = false;
+    if (familySelect) familySelect.disabled = visibleFamilies.length === 0;
+    if (firmwareSelect) firmwareSelect.disabled = visibleFirmwares.length === 0;
+    if (loadFirmwareBtn) loadFirmwareBtn.disabled = !firmwareMeta;
+    updateFlashEnabled();
   }
 }
 
@@ -1024,10 +1084,14 @@ if (detectMcuBtn) {
       log("Web flashing is not supported in this browser.");
       return;
     }
+    if (detectingMcu || flashingActive || loadingFirmware) return;
+    detectingMcu = true;
+    updateFlashEnabled();
     try {
       setStepState(step1El);
       setStepHeader(step1El, "Working");
       log("Detecting MCU...");
+      setHelp(HELP.detecting);
       const dev = await selectUsbDeviceForFlash();
       grantedUsbDevice = dev;
       bootselPermitted = true;
@@ -1041,10 +1105,14 @@ if (detectMcuBtn) {
       setStepState(step2El, [step1El]);
       setStep1Header();
       setStepHeader(step2El, "Ready");
-      updateFlashEnabled();
+      setHelp(HELP.detected(detectedMcu));
     } catch (err) {
       setStep1Header();
+      setHelp(HELP.detectFailed);
       log(`MCU detection failed (${err.message}).`);
+    } finally {
+      detectingMcu = false;
+      updateFlashEnabled();
     }
   });
 }
@@ -1055,6 +1123,8 @@ if (grantUsbBtn) {
       log("Web flashing is not supported in this browser.");
       return;
     }
+    if (flashingActive) return;
+    grantUsbBtn.disabled = true;
     try {
       log("Requesting USB access...");
       const dev = await navigator.usb.requestDevice({ filters: usbFilters() });
@@ -1066,9 +1136,12 @@ if (grantUsbBtn) {
       bootselPermitted = true;
       bootselDetected = true;
       log(`USB access granted: ${describeDevice(dev)}`);
-      updateFlashEnabled();
+      setHelp(HELP.granted);
     } catch (err) {
+      setHelp(HELP.grantCanceled);
       log(`USB access request canceled (${err.message}).`);
+    } finally {
+      updateFlashEnabled();
     }
   });
 }
@@ -1084,6 +1157,7 @@ function showFlashSuccess() {
     flashAgainBtn.style.display = "inline-block";
   }
   awaitingPostFlashConfirm = true;
+  setHelp(HELP.done);
 }
 
 // Driver-free path: write the UF2 into the bootrom's mass-storage drive.
@@ -1110,6 +1184,7 @@ async function flashViaDrive() {
   setStepHeader(step3El, "Working");
   setProgressMode("progress-write");
   setProgressValue(0);
+  setHelp(HELP.copying);
   log(`Copying UF2 to drive "${dir.name}"...`);
   try {
     const fileName = firmwareMeta.uf2_url.split("/").pop();
@@ -1149,6 +1224,7 @@ async function flashViaDrive() {
     } else {
       awaitingPostFlashConfirm = false;
       setStepHeader(step3El, "Ready");
+      setHelp(HELP.copyFailed);
       log(`ERROR: ${err.message}`);
     }
   } finally {
@@ -1162,6 +1238,7 @@ if (driveFlashBtn) {
 }
 
 document.getElementById("flash").onclick = async () => {
+  if (flashingActive) return;
   awaitingPostFlashConfirm = false;
   if (!detectedMcu) {
     log("Please complete Step 1 and detect MCU before flashing.");
@@ -1180,7 +1257,8 @@ document.getElementById("flash").onclick = async () => {
     setStepHeader(step2El, "Complete");
     setStepHeader(step3El, "Working");
     flashingActive = true;
-    updateFlashLabel();
+    updateFlashEnabled();
+    setHelp(HELP.flashing);
     const dev = await selectUsbDeviceForFlash();
     bootselIsRp2040 = dev.productId === PICOBOOT_PID_RP2040;
     const connectedMcu = getMcuForDevice(dev);
@@ -1321,6 +1399,8 @@ document.getElementById("flash").onclick = async () => {
 
   } catch (e) {
     awaitingPostFlashConfirm = false;
+    setStepHeader(step3El, "Ready");
+    setHelp(helpForFlashError(e.message));
     log("ERROR: " + e.message);
   } finally {
     if (pico) {
@@ -1358,6 +1438,7 @@ if (flashAnotherBtn) {
     setProgressMode("progress-write");
     setStepState(step3El, [step1El, step2El]);
     setStepHeader(step3El, "Ready");
+    setHelp(helpStep3());
     updateFlashEnabled();
   });
 }
@@ -1375,6 +1456,7 @@ async function detectBootselDevices() {
       setStepState(step2El, [step1El]);
       setStep1Header();
       setStepHeader(step2El, "Ready");
+      setHelp(HELP.detected(detectedMcu));
       if (changed) {
         setStepHeader(step3El, "Pending");
         setStepHeader(step4El, "Pending");
@@ -1399,6 +1481,10 @@ if (webUsbSupported && navigator.usb) {
         updateFlashEnabled();
         return;
       }
+      if (flashingActive || loadingFirmware) {
+        log(`Detected device: ${describeDevice(event.device)} (ignored while busy)`);
+        return;
+      }
       grantedUsbDevice = event.device;
       bootselDetected = true;
       bootselIsRp2040 = event.device.productId === PICOBOOT_PID_RP2040;
@@ -1408,6 +1494,7 @@ if (webUsbSupported && navigator.usb) {
         setStepState(step2El, [step1El]);
         setStep1Header();
         setStepHeader(step2El, "Ready");
+        setHelp(HELP.detected(newMcu));
         if (changed) {
           setStepHeader(step3El, "Pending");
           setStepHeader(step4El, "Pending");
@@ -1435,6 +1522,7 @@ if (webUsbSupported && navigator.usb) {
       if (grantedUsbDevice && event.device === grantedUsbDevice) {
         grantedUsbDevice = null;
         applyDetectedMcu(null, { resetSelection: true });
+        setHelp(HELP.unplugged);
         setStepState(step1El);
         setStep1Header();
         setStepHeader(step2El, "Pending");
