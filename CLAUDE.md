@@ -30,13 +30,21 @@ All logic lives in one `<script>` block at the bottom of `index.html`.
 
 **Wizard state.** Module-level `let` variables (`uf2`, `firmwareMeta`, `detectedMcu`, `grantedUsbDevice`, `bootselDetected`, `awaitingPostFlashConfirm`, ...) drive the UI. `setStepState`/`setStepHeader` move the accordion between steps and `updateFlashEnabled` recomputes button enablement from that state. `navigator.usb` `connect`/`disconnect` listeners keep the state live when a device is plugged/unplugged, including resetting back to step 1 if the granted device goes away mid-wizard. `awaitingPostFlashConfirm` suppresses that reset during the expected disconnect after reboot.
 
+**Busy locks.** `detectingMcu`, `loadingFirmware`, and `flashingActive` mark a running process. `updateFlashEnabled` disables every control that must not run twice while they are set, handlers early-return on them, and the `connect` listener ignores devices while busy (a mid-flash connect used to reset the wizard and abort the write). Any new long-running action needs a flag here.
+
+**Helper box.** `setHelp(HELP.<key>)` sets the `#helper` text above the progress bar. Every state transition (detect, download, grant, flash, copy, unplug, done, each failure) calls it, so new states or error paths should add a `HELP` entry. `helpForFlashError` picks Windows-specific advice when the error mentions `claimInterface`.
+
 **MCU detection and catalog filtering.** Device identity comes from USB PID (`PICOBOOT_PID_RP2040` = 0x0003, `PICOBOOT_PID_RP2350` = 0x000F, vendor 0x2E8A). `renderFamilies`/`renderFirmwares` only show catalog entries whose `device_type` matches `detectedMcu`. The flash handler re-checks that the connected device, detected MCU, and selected firmware all agree before touching flash.
 
 **Catalog format.** `devices.json` is `{ families: [ { id, name, description, image, firmwares: [ { id, name, description, device_type: "RP2040"|"RP2350", datetime, version, uf2_url, post_install_html } ] } ] }`. `post_install_html` is rendered after a successful flash through `sanitizeAllowedHtml`, which allows only a/b/br/em/i/li/ol/p/strong/u/ul and http(s) hrefs. Add new firmware by appending an entry with a unique `id` and the correct `device_type`.
 
 **UF2 handling.** `parseUF2` validates magic numbers and family IDs (with `ADVANCED_UF2_VALIDATION`), yields `{ blocks, ranges }` where `ranges` are the 4 KB-sector-aligned erase ranges derived from block addresses.
 
-**Flash sequence** (the `flashBtn` handler): open device, `findIface` (prefers the second listed interface if it is vendor-class 0xFF with bulk in/out, else scans all), then `PicoTool`: `reset` (control transfer 0x41), `exclusiveAccess(1)`, `exitXip`, optional `flashErase` per sector, `write` per block, optional verify via `read`, then `rebootToApp`. RP2350 uses `CMD_REBOOT2` (0x0A); RP2040 uses `CMD_REBOOT` with `pc=0, sp=SRAM_END`. Reboot errors that look like a disconnect are treated as success (`isExpectedDisconnectError`).
+**Flash sequence** (the `flashBtn` handler): open device, `findIface` (prefers the second listed interface if it is vendor-class 0xFF with bulk in/out, else scans all), then `PicoTool`: `reset` (control transfer 0x41), `exclusiveAccess(1)`, `exitXip`, optional `flashErase` per sector, `write` per block, optional verify via `read`, then `rebootToApp`. RP2350 uses `CMD_REBOOT2` (0x0A); RP2040 uses `CMD_REBOOT` with `pc=0, sp=SRAM_END`. Reboot errors that look like a disconnect are treated as success (`isExpectedDisconnectError`). `claimInterface` has a 3 s timeout and a failed `reset` is logged and skipped rather than aborting.
+
+**Drive-copy fallback** (`flashViaDrive`, Windows only). WebUSB on Windows needs the vendor interface bound to WinUSB with a DeviceInterfaceGUID, which the RP2040 bootrom never sets up (and an RP2350 can lose through a stale driver). So on Windows, when `showDirectoryPicker` exists, step 3 also offers copying the raw `uf2Bytes` to the BOOTSEL mass-storage drive the user picks, in 64 KB chunks via the File System Access API. The bootrom reboots as soon as the last block lands, so an error on `close()` or on the final chunk counts as success. Both paths end in `showFlashSuccess`.
+
+**Cookie banner and analytics.** The block before `</head>` is the same as `../magic-c-builder/src/consent.html`: orestbida/cookieconsent v2.9.2 (MIT) inlined verbatim, and the sidecartridge.com GA4 property `G-6VT9RXTJ2N` as a `type="text/plain" data-cookiecategory="analytics"` script, so it runs only after consent and only loads gtag on `*.sidecartridge.com`. On sidecartridge.com hosts `cookie_domain` is `sidecartridge.com`, so the `cc_cookie` choice is shared with the main site. `<body class="c_darkmode">` gives the banner its dark theme. The "Cookies" link (`data-cc="c-settings"`) at the bottom of `#app` reopens the settings.
 
 **PicoBoot framing** (`PicoTool.runCmd`): 32-byte command packet — magic 0x431fd10b, incrementing token, cmd id, cmd size, 16-bit reserved, 32-bit transfer length, then command args. Commands with bit 7 set (e.g. read 0x84) are device-to-host and are followed by a zero-length OUT ack; others are followed by a 64-byte IN status read. Every USB transfer is wrapped in `withTimeout` so a stalled device never hangs the page.
 
@@ -106,5 +114,5 @@ produce the work.
 
 - Keep everything in a single HTML file when possible; plain JavaScript, no build step, inline CSS is fine.
 - Favor ASCII text in edits.
-- Use the Pico ROM vendor protocol (picotool-style), never the mass-storage UF2 path.
+- Use the Pico ROM vendor protocol (picotool-style) as the flashing path. The mass-storage drive copy exists only as the Windows driver-free fallback above; do not make it the default or extend it to other platforms without asking.
 - Keep timeouts on every USB transfer. The erase step stays optional and user-controlled.
