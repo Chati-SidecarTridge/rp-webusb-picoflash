@@ -130,14 +130,14 @@
     },
     {
       "id": "tosemulator-family-rev2",
-      "name": "SidecarTridge TOS Emulator Family rev2",
-      "description": "Firmware builds for SidecarTridge TOS Emulator board rev2 for the Atari ST, STE, and Mega series computers.",
+      "name": "SidecarTridge TOS Emulator Family (board revisions 1 and 2)",
+      "description": "Firmware builds for SidecarTridge TOS Emulator board revisions 1 and 2 (RP2040) for the Atari ST, STE, and Mega series computers.",
       "image": "https://sidecartridge.com/assets/images/products/rom/ROM_EMULATOR_V2_BOARD_FRONT_1280px.png",
       "firmwares": [
         {
           "id": "tos-emulator-v2-256kb",
-          "name": "TOS Emulator rev2 boards for Atari STE and Mega STE (256KB)",
-          "description": "Full 256KB firmware for SidecarTridge TOS Emulator v2 revision boards for Atari STE and Mega STE computers.",
+          "name": "TOS Emulator, board revisions 1 and 2, for Atari STE and Mega STE (256KB)",
+          "description": "Full 256KB firmware for SidecarTridge TOS Emulator board revisions 1 and 2 for Atari STE and Mega STE computers.",
           "device_type": "RP2040",
           "datetime": "2024-12-15T10:00:00Z",
           "version": "v2.1.0",
@@ -146,8 +146,8 @@
         },
         {
           "id": "tos-emulator-v2-192kb",
-          "name": "TOS Emulator rev2 boards for Atari ST and Mega ST (192KB)",
-          "description": "Full 192KB firmware for SidecarTridge TOS Emulator v2 revision boards for Atari ST and Mega ST computers.",
+          "name": "TOS Emulator, board revisions 1 and 2, for Atari ST and Mega ST (192KB)",
+          "description": "Full 192KB firmware for SidecarTridge TOS Emulator board revisions 1 and 2 for Atari ST and Mega ST computers.",
           "device_type": "RP2040",
           "datetime": "2024-12-15T10:00:00Z",
           "version": "v2.1.0",
@@ -156,8 +156,8 @@
         },
         {
           "id": "tos-emulator-v2-upgrade",
-          "name": "TOS Emulator rev2 boards upgrade for all Atari models",
-          "description": "Upgrade firmware for SidecarTridge TOS Emulator v2 revision boards for all Atari ST, STE, and Mega series computers.",
+          "name": "TOS Emulator, board revisions 1 and 2, upgrade for all Atari models",
+          "description": "Upgrade firmware for SidecarTridge TOS Emulator board revisions 1 and 2 for all Atari ST, STE, and Mega series computers.",
           "device_type": "RP2040",
           "datetime": "2024-12-15T10:00:00Z",
           "version": "v2.1.0",
@@ -168,44 +168,44 @@
     },
     {
       "id": "tosemulator-family-rev3",
-      "name": "SidecarTridge TOS Emulator Family rev3",
-      "description": "Firmware builds for SidecarTridge TOS Emulator board rev3 for the Atari ST, STE, and Mega series computers.",
+      "name": "SidecarTridge TOS Emulator Family (board revision 3)",
+      "description": "Firmware builds for SidecarTridge TOS Emulator board revision 3 for the Atari ST, STE, and Mega series computers.",
       "image": "https://sidecartridge.com/assets/images/products/rom/ROM_EMULATOR_V3_BOARD_FRONT_1280px.png",
       "firmwares": [
         {
           "id": "tos-emulator-v4-256kb",
-          "name": "TOS Emulator rev3 boards for Atari STE and Mega STE (256KB)",
-          "description": "Full 256KB firmware for SidecarTridge TOS Emulator v3 revision boards for Atari STE and Mega STE computers.",
+          "name": "TOS Emulator, board revision 3, for Atari STE and Mega STE (256KB)",
+          "description": "Full 256KB firmware for SidecarTridge TOS Emulator board revision 3 for Atari STE and Mega STE computers.",
           "device_type": "RP2350",
           "datetime": "2026-10-10T10:00:00Z",
           "version": "v4.0.0",
           "uf2_url": "https://tosemulator.sidecartridge.com/sidecartridge-tos-rp2350a-emutos-256k-full-v4.0.0.uf2",
-          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+          "post_install_html": "<p>Unplug the device and plug it into your computer to complete the installation.</p><p>The drive now holds SWITCHER 4.0.0 and the rescue switcher 4.0.0. Older copies of the SWITCHER on your floppies or hard disk do not work with this firmware: replace them too. See <a href=\"https://docs.sidecartridge.com/sidecartridge-tos/getting-startedV4/\">Getting Started</a>.</p>"
         },
         {
           "id": "tos-emulator-v4-192kb",
-          "name": "TOS Emulator rev3 boards for Atari ST and Mega ST (192KB)",
-          "description": "Full 192KB firmware for SidecarTridge TOS Emulator v3 revision boards for Atari ST and Mega ST computers.",
+          "name": "TOS Emulator, board revision 3, for Atari ST and Mega ST (192KB)",
+          "description": "Full 192KB firmware for SidecarTridge TOS Emulator board revision 3 for Atari ST and Mega ST computers.",
           "device_type": "RP2350",
           "datetime": "2026-10-10T10:00:00Z",
           "version": "v4.0.0",
           "uf2_url": "https://tosemulator.sidecartridge.com/sidecartridge-tos-rp2350a-emutos-192k-full-v4.0.0.uf2",
-          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+          "post_install_html": "<p>Unplug the device and plug it into your computer to complete the installation.</p><p>The drive now holds SWITCHER 4.0.0 and the rescue switcher 4.0.0. Older copies of the SWITCHER on your floppies or hard disk do not work with this firmware: replace them too. See <a href=\"https://docs.sidecartridge.com/sidecartridge-tos/getting-startedV4/\">Getting Started</a>.</p>"
         },
         {
           "id": "tos-emulator-v4-upgrade",
-          "name": "TOS Emulator rev3 boards upgrade for all Atari models",
-          "description": "Upgrade firmware for SidecarTridge TOS Emulator v3 revision boards for all Atari ST, STE, and Mega series computers.",
+          "name": "TOS Emulator, board revision 3, upgrade for all Atari models",
+          "description": "Upgrade firmware for SidecarTridge TOS Emulator board revision 3 for all Atari ST, STE, and Mega series computers.",
           "device_type": "RP2350",
           "datetime": "2026-10-10T10:00:00Z",
           "version": "v4.0.0",
           "uf2_url": "https://tosemulator.sidecartridge.com/sidecartridge-tos-rp2350a-v4.0.0.uf2",
-          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+          "post_install_html": "<p>Unplug the device and plug it into your computer to complete the installation.</p><p><b>Coming from firmware v3.x?</b> The update keeps your ROM images, but you must also replace the SWITCHER and the rescue switcher on the ROMEMUL drive with the 4.0.0 versions, or they stop at an incompatibility screen. Step by step: <a href=\"https://docs.sidecartridge.com/sidecartridge-tos/upgrade-v4/\">Upgrading to v4.0.0</a>.</p>"
         },
         {
           "id": "tos-emulator-v3-256kb",
-          "name": "TOS Emulator rev3 boards for Atari STE and Mega STE (256KB)",
-          "description": "Full 256KB firmware for SidecarTridge TOS Emulator v3 revision boards for Atari STE and Mega STE computers.",
+          "name": "TOS Emulator, board revision 3, for Atari STE and Mega STE (256KB)",
+          "description": "Full 256KB firmware for SidecarTridge TOS Emulator board revision 3 for Atari STE and Mega STE computers.",
           "device_type": "RP2350",
           "datetime": "2024-12-15T10:00:00Z",
           "version": "v3.1.0",
@@ -214,8 +214,8 @@
         },
         {
           "id": "tos-emulator-v3-192kb",
-          "name": "TOS Emulator rev3 boards for Atari ST and Mega ST (192KB)",
-          "description": "Full 192KB firmware for SidecarTridge TOS Emulator v3 revision boards for Atari ST and Mega ST computers.",
+          "name": "TOS Emulator, board revision 3, for Atari ST and Mega ST (192KB)",
+          "description": "Full 192KB firmware for SidecarTridge TOS Emulator board revision 3 for Atari ST and Mega ST computers.",
           "device_type": "RP2350",
           "datetime": "2024-12-15T10:00:00Z",
           "version": "v3.1.0",
@@ -224,8 +224,8 @@
         },
         {
           "id": "tos-emulator-v3-upgrade",
-          "name": "TOS Emulator rev3 boards upgrade for all Atari models",
-          "description": "Upgrade firmware for SidecarTridge TOS Emulator v3 revision boards for all Atari ST, STE, and Mega series computers.",
+          "name": "TOS Emulator, board revision 3, upgrade for all Atari models",
+          "description": "Upgrade firmware for SidecarTridge TOS Emulator board revision 3 for all Atari ST, STE, and Mega series computers.",
           "device_type": "RP2350",
           "datetime": "2024-12-15T10:00:00Z",
           "version": "v3.1.0",
@@ -236,34 +236,34 @@
     },
     {
       "id": "kickstartemulator-family",
-      "name": "SidecarTridge Kickstart Emulator Family",
-      "description": "Firmware builds for SidecarTridge Kickstart Emulator board for the Amiga 500 and 2000 computers.",
+      "name": "SidecarTridge Kickstart Multi ROM Family",
+      "description": "Firmware builds for SidecarTridge Kickstart Multi ROM board for the Amiga 500 and 2000 computers.",
       "image": "https://sidecartridge.com/assets/images/products/kickstart/KICKSTART-A500-TOP.png",
       "firmwares": [
         {
           "id": "kickstart-emulator-v4-diagrom",
-          "name": "Kickstart Emulator rev3 Full Firmware +  DiagROM",
-          "description": "Full firmware for SidecarTridge Kickstart Emulator v3 revision boards for Amiga 500 and 2000 computers plus DiagROM diagnostic ROM as default ROM.",
+          "name": "Kickstart Multi ROM, board revision 3, full firmware + DiagROM",
+          "description": "Full firmware for SidecarTridge Kickstart Multi ROM board revision 3 for Amiga 500 and 2000 computers plus DiagROM diagnostic ROM as default ROM.",
           "device_type": "RP2350",
           "datetime": "2026-10-10T09:00:00Z",
           "version": "v4.0.0",
           "uf2_url": "https://tosemulator.sidecartridge.com/sidecartridge-kickstart-rp2350a-diagrom-full-v4.0.0.uf2",
-          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+          "post_install_html": "<p>Unplug the device and plug it into your computer to complete the installation.</p><p>The drive now holds SWITCHER 4.0.0 and the rescue switcher 4.0.0. Older copies of the SWITCHER on your floppies or hard disk do not work with this firmware: replace them too. See <a href=\"https://docs.sidecartridge.com/sidecartridge-kickstart/getting-startedV4/\">Getting Started</a>.</p>"
         },
         {
           "id": "kickstart-emulator-v4-upgrade",
-          "name": "Kickstart Emulator rev3 Upgrade Firmware",
-          "description": "Upgrade firmware for SidecarTridge Kickstart Emulator v3 revision boards for Amiga 500 and 2000 computers.",
+          "name": "Kickstart Multi ROM, board revision 3, upgrade firmware",
+          "description": "Upgrade firmware for SidecarTridge Kickstart Multi ROM board revision 3 for Amiga 500 and 2000 computers.",
           "device_type": "RP2350",
           "datetime": "2026-10-10T09:00:00Z",
           "version": "v4.0.0",
           "uf2_url": "https://tosemulator.sidecartridge.com/sidecartridge-kickstart-rp2350a-update-v4.0.0.uf2",
-          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+          "post_install_html": "<p>Unplug the device and plug it into your computer to complete the installation.</p><p><b>Coming from firmware v3.x?</b> The update keeps your ROM images, but you must also replace the SWITCHER and the rescue switcher on the ROMEMUL drive with the 4.0.0 versions, or they stop at an incompatibility screen. Step by step: <a href=\"https://docs.sidecartridge.com/sidecartridge-kickstart/upgrade-v4/\">Upgrading to v4.0.0</a>.</p>"
         },
         {
           "id": "kickstart-emulator-v3-diagrom",
-          "name": "Kickstart Emulator rev3 Full Firmware +  DiagROM",
-          "description": "Full firmware for SidecarTridge Kickstart Emulator v3 revision boards for Amiga 500 and 2000 computers plus DiagROM diagnostic ROM as default ROM.",
+          "name": "Kickstart Multi ROM, board revision 3, full firmware + DiagROM",
+          "description": "Full firmware for SidecarTridge Kickstart Multi ROM board revision 3 for Amiga 500 and 2000 computers plus DiagROM diagnostic ROM as default ROM.",
           "device_type": "RP2350",
           "datetime": "2024-11-20T09:00:00Z",
           "version": "v3.1.0",
@@ -272,8 +272,8 @@
         },
         {
           "id": "kickstart-emulator-v3-upgrade",
-          "name": "Kickstart Emulator rev3 Upgrade Firmware",
-          "description": "Upgrade firmware for SidecarTridge Kickstart Emulator v3 revision boards for Amiga 500 and 2000 computers.",
+          "name": "Kickstart Multi ROM, board revision 3, upgrade firmware",
+          "description": "Upgrade firmware for SidecarTridge Kickstart Multi ROM board revision 3 for Amiga 500 and 2000 computers.",
           "device_type": "RP2350",
           "datetime": "2024-11-20T09:00:00Z",
           "version": "v3.1.0",

@@ -8,8 +8,10 @@ A WebUSB UF2 flasher for RP2040/RP2350 devices in BOOTSEL mode, built for Sideca
 
 - `index.html` — the production page. A 4-step wizard: detect MCU, pick firmware from the catalog, grant USB access and flash, done.
 - `picotoolweb.html` — a developer tool for sending raw PicoBoot commands (exclusive, exit XIP, get info, read, etc.) to a connected BOOTSEL device. Shares the same `PicoTool`/`findIface`/`withTimeout` code as the installer but is copied, not imported.
-- `devices.json` — the firmware catalog, and the only copy the page reads. `DEVICES_JSON_URL` is the relative path `devices.json`, fetched from the same origin with a cache-busting `_ts` query param. The old copy at `s3.eu-west-3.amazonaws.com/tosemulator.sidecartridge.com/devices.json` is frozen and no longer read; do not edit it.
+- `devices.json` — the firmware catalog, and the only copy the page reads. `DEVICES_JSON_URL` is the relative path `devices.json`, fetched from the same origin with a cache-busting `_ts` query param. The old S3 copy (`s3.eu-west-3.amazonaws.com/tosemulator.sidecartridge.com/devices.json`) was deleted on 2026-10-21; do not recreate it.
 - `tools/check-devices.py` — validates `devices.json` (parses, required fields, unique ids, `device_type`, valid `datetime`, every `uf2_url` answers). Run it before every PR that touches the catalog: `python3 tools/check-devices.py` (add `--offline` to skip the URL checks).
+
+**Naming in the catalog.** Hardware is "board revision N" ("board revision 3", "board revisions 1 and 2"), software is "firmware vX.Y.Z"; never a bare "v3" that could mean either. The Amiga product is the "Kickstart Multi ROM". Catalog `id`s keep their old spelling (`tosemulator-family-rev3`, `tos-emulator-v4-upgrade`, ...): they are identifiers, not text.
 
 **Releasing firmware.** Only the `.uf2` binaries go to S3 (`tosemulator.sidecartridge.com`). The catalog changes here, by PR. Upload the binary first, then merge the PR that points to it, so the page never offers a file that does not exist yet.
 
