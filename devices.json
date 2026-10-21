@@ -7,6 +7,86 @@
       "image": "https://sidecartridge.com/assets/images/products/multidevice/BOARD-3.1-PICOW-TOP.png",
       "firmwares": [
         {
+          "id": "multidevice-1G-full-v2.4.2",
+          "name": "Multidevice First Generation (1G) Full",
+          "description": "The first generation of the SidecarTridge Multi-Device cartridge firmware.",
+          "device_type": "RP2040",
+          "datetime": "2026-09-30T00:00:00Z",
+          "version": "v2.4.2",
+          "uf2_url": "https://tosemulator.sidecartridge.com/rp-booster-v2.4.2-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "multidevice-1G-debug-v2.4.2",
+          "name": "Multidevice First Generation (1G) Debug",
+          "description": "The debug build of the first generation SidecarTridge Multi-Device cartridge firmware.",
+          "device_type": "RP2040",
+          "datetime": "2026-09-30T00:00:00Z",
+          "version": "v2.4.2",
+          "uf2_url": "https://tosemulator.sidecartridge.com/rp-booster-v2.4.2-debug.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "multidevice-1G-full-v2.4.1",
+          "name": "Multidevice First Generation (1G) Full",
+          "description": "The first generation of the SidecarTridge Multi-Device cartridge firmware.",
+          "device_type": "RP2040",
+          "datetime": "2026-08-30T00:00:00Z",
+          "version": "v2.4.1",
+          "uf2_url": "https://tosemulator.sidecartridge.com/rp-booster-v2.4.1-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "multidevice-1G-debug-v2.4.1",
+          "name": "Multidevice First Generation (1G) Debug",
+          "description": "The debug build of the first generation SidecarTridge Multi-Device cartridge firmware.",
+          "device_type": "RP2040",
+          "datetime": "2026-08-30T00:00:00Z",
+          "version": "v2.4.1",
+          "uf2_url": "https://tosemulator.sidecartridge.com/rp-booster-v2.4.1-debug.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "multidevice-1G-full-v2.3.0",
+          "name": "Multidevice First Generation (1G) Full",
+          "description": "The first generation of the SidecarTridge Multi-Device cartridge firmware.",
+          "device_type": "RP2040",
+          "datetime": "2026-08-02T10:00:00Z",
+          "version": "v2.3.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/rp-booster-v2.3.0-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "multidevice-1G-debug-v2.3.0",
+          "name": "Multidevice First Generation (1G) Debug",
+          "description": "The debug build of the first generation SidecarTridge Multi-Device cartridge firmware.",
+          "device_type": "RP2040",
+          "datetime": "2026-08-02T10:00:00Z",
+          "version": "v2.3.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/rp-booster-v2.3.0-debug.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "multidevice-1G-full-v2.2.0",
+          "name": "Multidevice First Generation (1G) Full",
+          "description": "The first generation of the SidecarTridge Multi-Device cartridge firmware.",
+          "device_type": "RP2040",
+          "datetime": "2026-04-20T10:00:00Z",
+          "version": "v2.2.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/rp-booster-v2.2.0-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "multidevice-1G-debug-v2.2.0",
+          "name": "Multidevice First Generation (1G) Debug",
+          "description": "The debug build of the first generation SidecarTridge Multi-Device cartridge firmware.",
+          "device_type": "RP2040",
+          "datetime": "2026-04-20T10:00:00Z",
+          "version": "v2.2.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/rp-booster-v2.2.0-debug.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
           "id": "multidevice-1G-full-v2.1.0",
           "name": "Multidevice First Generation (1G) Full",
           "description": "The first generation of the SidecarTridge Multi-Device cartridge firmware.",
@@ -93,6 +173,36 @@
       "image": "https://sidecartridge.com/assets/images/products/rom/ROM_EMULATOR_V3_BOARD_FRONT_1280px.png",
       "firmwares": [
         {
+          "id": "tos-emulator-v4-256kb",
+          "name": "TOS Emulator rev3 boards for Atari STE and Mega STE (256KB)",
+          "description": "Full 256KB firmware for SidecarTridge TOS Emulator v3 revision boards for Atari STE and Mega STE computers.",
+          "device_type": "RP2350",
+          "datetime": "2026-10-10T10:00:00Z",
+          "version": "v4.0.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/sidecartridge-tos-rp2350a-emutos-256k-full-v4.0.0.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "tos-emulator-v4-192kb",
+          "name": "TOS Emulator rev3 boards for Atari ST and Mega ST (192KB)",
+          "description": "Full 192KB firmware for SidecarTridge TOS Emulator v3 revision boards for Atari ST and Mega ST computers.",
+          "device_type": "RP2350",
+          "datetime": "2026-10-10T10:00:00Z",
+          "version": "v4.0.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/sidecartridge-tos-rp2350a-emutos-192k-full-v4.0.0.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "tos-emulator-v4-upgrade",
+          "name": "TOS Emulator rev3 boards upgrade for all Atari models",
+          "description": "Upgrade firmware for SidecarTridge TOS Emulator v3 revision boards for all Atari ST, STE, and Mega series computers.",
+          "device_type": "RP2350",
+          "datetime": "2026-10-10T10:00:00Z",
+          "version": "v4.0.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/sidecartridge-tos-rp2350a-v4.0.0.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
           "id": "tos-emulator-v3-256kb",
           "name": "TOS Emulator rev3 boards for Atari STE and Mega STE (256KB)",
           "description": "Full 256KB firmware for SidecarTridge TOS Emulator v3 revision boards for Atari STE and Mega STE computers.",
@@ -131,6 +241,26 @@
       "image": "https://sidecartridge.com/assets/images/products/kickstart/KICKSTART-A500-TOP.png",
       "firmwares": [
         {
+          "id": "kickstart-emulator-v4-diagrom",
+          "name": "Kickstart Emulator rev3 Full Firmware +  DiagROM",
+          "description": "Full firmware for SidecarTridge Kickstart Emulator v3 revision boards for Amiga 500 and 2000 computers plus DiagROM diagnostic ROM as default ROM.",
+          "device_type": "RP2350",
+          "datetime": "2026-10-10T09:00:00Z",
+          "version": "v4.0.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/sidecartridge-kickstart-rp2350a-diagrom-full-v4.0.0.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "kickstart-emulator-v4-upgrade",
+          "name": "Kickstart Emulator rev3 Upgrade Firmware",
+          "description": "Upgrade firmware for SidecarTridge Kickstart Emulator v3 revision boards for Amiga 500 and 2000 computers.",
+          "device_type": "RP2350",
+          "datetime": "2026-10-10T09:00:00Z",
+          "version": "v4.0.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/sidecartridge-kickstart-rp2350a-update-v4.0.0.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
           "id": "kickstart-emulator-v3-diagrom",
           "name": "Kickstart Emulator rev3 Full Firmware +  DiagROM",
           "description": "Full firmware for SidecarTridge Kickstart Emulator v3 revision boards for Amiga 500 and 2000 computers plus DiagROM diagnostic ROM as default ROM.",
@@ -156,8 +286,48 @@
       "id": "keyboardemulator-croissant-family",
       "name": "SidecarTridge Croissant Keyboard Emulator Family",
       "description": "Firmware builds for the internal Croissant IKBD keyboard-controller emulator for Atari ST-family systems",
-      "image": "https://docs.sidecartridge.com/sidecartridge-keyboard/assets/images/KEYBOARD-EMULATOR-CROISSSANT-TOP.png",
+      "image": "https://docs.sidecartridge.com/sidecartridge-keyboard/assets/images/KEYBOARD-EMULATOR-CROISSANT-TOP.png",
       "firmwares": [
+        {
+          "id": "keyboardemulator-croissant-release-v1.2.0",
+          "name": "Croissant Internal Keyboard Emulator - Release",
+          "description": "Full firmware for SidecarTridge Croissant Internal Keyboard Emulator for Atari ST-family systems.",
+          "device_type": "RP2350",
+          "datetime": "2025-06-15T09:00:00Z",
+          "version": "v1.2.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/ikbd-booster-v1.2.0-croissant-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "keyboardemulator-croissant-debug-v1.2.0",
+          "name": "Croissant Internal Keyboard Emulator - Debug release",
+          "description": "Full firmware for SidecarTridge Croissant Internal Keyboard Emulator for Atari ST-family systems. Debug mode.",
+          "device_type": "RP2350",
+          "datetime": "2025-06-15T09:00:00Z",
+          "version": "v1.2.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/ikbd-booster-v1.2.0-croissant-debug-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "keyboardemulator-croissant-release-v1.1.0",
+          "name": "Croissant Internal Keyboard Emulator - Release",
+          "description": "Full firmware for SidecarTridge Croissant Internal Keyboard Emulator for Atari ST-family systems.",
+          "device_type": "RP2350",
+          "datetime": "2025-05-31T09:00:00Z",
+          "version": "v1.1.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/ikbd-booster-v1.1.0-croissant-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "keyboardemulator-croissant-debug-v1.1.0",
+          "name": "Croissant Internal Keyboard Emulator - Debug release",
+          "description": "Full firmware for SidecarTridge Croissant Internal Keyboard Emulator for Atari ST-family systems. Debug mode.",
+          "device_type": "RP2350",
+          "datetime": "2025-05-31T09:00:00Z",
+          "version": "v1.1.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/ikbd-booster-v1.1.0-croissant-debug-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
         {
           "id": "keyboardemulator-croissant-release",
           "name": "Croissant Internal Keyboard Emulator - Release",
@@ -186,6 +356,46 @@
       "description": "Firmware builds for the external dongle Souffle IKBD keyboard-controller emulator for Atari Mega ST and Mega STE families",
       "image": "https://docs.sidecartridge.com/sidecartridge-keyboard/assets/images/KEYBOARD-EMULATOR-SOUFFLE-PERSPECTIVE.png",
       "firmwares": [
+        {
+          "id": "keyboardemulator-souffle-release-v1.2.0",
+          "name": "Souffle External Dongle Keyboard Emulator - Release",
+          "description": "Full firmware for SidecarTridge Souffle External Dongle Keyboard Emulator for Atari Mega ST and Mega STE families.",
+          "device_type": "RP2350",
+          "datetime": "2024-06-15T09:00:00Z",
+          "version": "v1.2.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/ikbd-booster-v1.2.0-souffle-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "keyboardemulator-souffle-debug-v1.2.0",
+          "name": "Souffle External Dongle Keyboard Emulator - Debug release",
+          "description": "Full firmware for SidecarTridge Souffle External Dongle Keyboard Emulator for Atari Mega ST and Mega STE families. Debug mode.",
+          "device_type": "RP2350",
+          "datetime": "2024-06-15T09:00:00Z",
+          "version": "v1.2.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/ikbd-booster-v1.2.0-souffle-debug-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "keyboardemulator-souffle-release-v1.1.0",
+          "name": "Souffle External Dongle Keyboard Emulator - Release",
+          "description": "Full firmware for SidecarTridge Souffle External Dongle Keyboard Emulator for Atari Mega ST and Mega STE families.",
+          "device_type": "RP2350",
+          "datetime": "2024-05-31T09:00:00Z",
+          "version": "v1.1.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/ikbd-booster-v1.1.0-souffle-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
+        {
+          "id": "keyboardemulator-souffle-debug-v1.1.0",
+          "name": "Souffle External Dongle Keyboard Emulator - Debug release",
+          "description": "Full firmware for SidecarTridge Souffle External Dongle Keyboard Emulator for Atari Mega ST and Mega STE families. Debug mode.",
+          "device_type": "RP2350",
+          "datetime": "2024-05-31T09:00:00Z",
+          "version": "v1.1.0",
+          "uf2_url": "https://tosemulator.sidecartridge.com/ikbd-booster-v1.1.0-souffle-debug-full.uf2",
+          "post_install_html": "<p>Unplug the device and plug it to your computer to complete the installation.</p>"
+        },
         {
           "id": "keyboardemulator-souffle-release",
           "name": "Souffle External Dongle Keyboard Emulator - Release",

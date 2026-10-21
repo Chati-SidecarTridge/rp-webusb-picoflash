@@ -8,7 +8,10 @@ A WebUSB UF2 flasher for RP2040/RP2350 devices in BOOTSEL mode, built for Sideca
 
 - `index.html` — the production page. A 4-step wizard: detect MCU, pick firmware from the catalog, grant USB access and flash, done.
 - `picotoolweb.html` — a developer tool for sending raw PicoBoot commands (exclusive, exit XIP, get info, read, etc.) to a connected BOOTSEL device. Shares the same `PicoTool`/`findIface`/`withTimeout` code as the installer but is copied, not imported.
-- `devices.json` — the firmware catalog. **The page does not read the local file.** It fetches `DEVICES_JSON_URL` (an S3 bucket) with a cache-busting `_ts` query param. The repo copy is the source that gets uploaded to S3; editing it locally changes nothing in the page until it is published.
+- `devices.json` — the firmware catalog, and the only copy the page reads. `DEVICES_JSON_URL` is the relative path `devices.json`, fetched from the same origin with a cache-busting `_ts` query param. The old copy at `s3.eu-west-3.amazonaws.com/tosemulator.sidecartridge.com/devices.json` is frozen and no longer read; do not edit it.
+- `tools/check-devices.py` — validates `devices.json` (parses, required fields, unique ids, `device_type`, valid `datetime`, every `uf2_url` answers). Run it before every PR that touches the catalog: `python3 tools/check-devices.py` (add `--offline` to skip the URL checks).
+
+**Releasing firmware.** Only the `.uf2` binaries go to S3 (`tosemulator.sidecartridge.com`). The catalog changes here, by PR. Upload the binary first, then merge the PR that points to it, so the page never offers a file that does not exist yet.
 
 `AGENTS.md` also holds project conventions (single file, plain JS, inline CSS, ASCII text, picotool-style ROM protocol). Keep it in sync with changes here.
 
@@ -16,7 +19,7 @@ A WebUSB UF2 flasher for RP2040/RP2350 devices in BOOTSEL mode, built for Sideca
 
 There is no build. Open the HTML file in a Chromium-based browser (Chrome, Edge, Brave). WebUSB is not available on Firefox/Safari, and the page hides the flashing UI and shows manual-install instructions there (`enforceBrowserSupport`, `manualOnly`).
 
-Opening the file directly (`file://`) works. If you want it served over HTTP instead:
+Serve it over HTTP: the page fetches `devices.json` with a relative URL, which Chromium blocks on `file://`, so opening the file directly shows the page but no catalog.
 
 ```
 python3 -m http.server 8000
